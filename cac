@@ -1,0 +1,81 @@
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+local Player = Players.LocalPlayer
+
+-- ==========================================
+-- 1. TẠO GIAO DIỆN (GUI) CƠ BẢN
+-- ==========================================
+local ScreenGui = Instance.new("ScreenGui")
+-- Cố gắng bỏ vào CoreGui để chống bị phát hiện, nếu không được thì bỏ vào PlayerGui
+local success = pcall(function()
+    ScreenGui.Parent = CoreGui
+end)
+if not success then
+    ScreenGui.Parent = Player:WaitForChild("PlayerGui")
+end
+
+local Frame = Instance.new("Frame", ScreenGui)
+Frame.Size = UDim2.new(0, 200, 0, 100)
+Frame.Position = UDim2.new(0.5, -100, 0.2, 0)
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.Active = true
+Frame.Draggable = true
+
+local UIListLayout = Instance.new("UIListLayout", Frame)
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+local JoinBtn = Instance.new("TextButton", Frame)
+JoinBtn.Size = UDim2.new(1, 0, 0, 50)
+JoinBtn.Text = "JOIN VIP SERVER"
+JoinBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
+JoinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+JoinBtn.Font = Enum.Font.GothamBold
+JoinBtn.TextSize = 14
+
+local CloseBtn = Instance.new("TextButton", Frame)
+CloseBtn.Size = UDim2.new(1, 0, 0, 50)
+CloseBtn.Text = "CLOSE GUI"
+CloseBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.TextSize = 14
+
+-- ==========================================
+-- 2. XỬ LÝ CHỨC NĂNG NÚT BẤM
+-- ==========================================
+
+-- Nút Xóa GUI
+CloseBtn.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+-- Nút Join Server VIP & Tự Động Chạy Lại Script
+JoinBtn.MouseButton1Click:Connect(function()
+    JoinBtn.Text = "TELEPORTING..."
+    JoinBtn.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
+    
+    -- MÃ LỆNH TỰ CHẠY LẠI:
+    -- Chú ý: Bạn ĐỔI "LINK_RAW_SCRIPT_CUA_BAN" thành link Pastebin/Github chứa code của bạn
+    local reExecuteCode = [[
+        loadstring(game:HttpGet("LINK_RAW_SCRIPT_CUA_BAN"))()
+    ]]
+    
+    -- Đặt lịch chạy lại script cho Executor khi sang server mới
+    if queue_on_teleport then
+        queue_on_teleport(reExecuteCode)
+    elseif syn and syn.queue_on_teleport then
+        syn.queue_on_teleport(reExecuteCode)
+    else
+        warn("Executor của bạn không hỗ trợ queue_on_teleport!")
+    end
+    
+    -- Thông số Server VIP của Spear Fishing
+    local placeId = 101953168527257
+    local vipCode = "30414920082916725198913444813531"
+    
+    -- Lệnh Dịch Chuyển
+    pcall(function()
+        TeleportService:TeleportToPrivateServer(placeId, vipCode, {Player})
+    end)
+end)
