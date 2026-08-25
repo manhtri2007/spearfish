@@ -56,9 +56,8 @@ JoinBtn.MouseButton1Click:Connect(function()
     JoinBtn.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
     
     -- MÃ LỆNH TỰ CHẠY LẠI:
-    -- Chú ý: Bạn ĐỔI "LINK_RAW_SCRIPT_CUA_BAN" thành link Pastebin/Github chứa code của bạn
     local reExecuteCode = [[
-        loadstring(game:HttpGet("LINK_RAW_SCRIPT_CUA_BAN"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/manhtri2007/spearfish/refs/heads/main/cac"))()
     ]]
     
     -- Đặt lịch chạy lại script cho Executor khi sang server mới
@@ -70,12 +69,12 @@ JoinBtn.MouseButton1Click:Connect(function()
         warn("Executor của bạn không hỗ trợ queue_on_teleport!")
     end
     
-    -- Thông số Server VIP của Spear Fishing
-    local placeId = 101953168527257
-    local vipCode = "30414920082916725198913444813531"
+    -- Đã fix: Dùng game.PlaceId để tránh lỗi sai map phụ
+    local placeId = game.PlaceId 
+    local jobId = game.JobId
     
     -- Lệnh Dịch Chuyển
     pcall(function()
-        TeleportService:TeleportToPrivateServer(placeId, vipCode, {Player})
+        TeleportService:TeleportToPlaceInstance(placeId, jobId, Player)
     end)
 end)
